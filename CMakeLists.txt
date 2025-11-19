@@ -11,6 +11,7 @@ set(SOURCES
     main.cpp
     Backend.h
         Backend.cpp
+        gl_backend.h
 )
 
 

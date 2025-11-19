@@ -3,14 +3,17 @@
 //
 
 #pragma once
-#include <GLES3/gl3.h>
-#include <string>
+#include "gl_backend.h"
+
 
 
 class Backend {
 public:
+
+    GLuint shaderProgram;
+    GLuint VAO, VBO;
     virtual void initialize_context() = 0;
-    virtual void init() = 0;
+    void init() ;
     virtual void do_main_loop() = 0;
     virtual void cleanup() = 0;
 };

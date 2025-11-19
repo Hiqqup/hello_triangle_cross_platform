@@ -5,7 +5,7 @@
 #include "BrowserBackend.h"
 #include <emscripten/emscripten.h>
 #include <emscripten/html5.h>
-#include <GLES3/gl3.h>
+#include "gl_backend.h"
 #include <iostream>
 
 
@@ -19,31 +19,6 @@ void updateViewport() {
 
     glViewport(0, 0, (int)width, (int)height);
 }
-
-GLuint shaderProgram;
-GLuint VAO;
-
-// Vertex shader (WebGL2 = GLES 3.0)
-const char* vertexShaderSource =
-"#version 300 es\n"
-"layout(location = 0) in vec3 aPos;\n"
-"layout(location = 1) in vec3 aColor;\n"
-"out vec3 vertexColor;\n"
-"void main() {\n"
-"    gl_Position = vec4(aPos, 1.0);\n"
-"    vertexColor = aColor;\n"
-"}\n";
-
-// Fragment shader
-const char* fragmentShaderSource =
-"#version 300 es\n"
-"precision mediump float;\n"
-"in vec3 vertexColor;\n"
-"out vec4 FragColor;\n"
-"void main() {\n"
-"    FragColor = vec4(vertexColor, 1.0);\n"
-"}\n";
-
 
 void BrowserBackend::initialize_context() {
     EmscriptenWebGLContextAttributes attr;
@@ -67,7 +42,7 @@ void BrowserBackend::initialize_context() {
     emscripten_webgl_make_context_current(ctx);
 }
 
-
+/*
 void BrowserBackend::init() {
 
     // Compile vertex shader
@@ -117,9 +92,9 @@ void BrowserBackend::init() {
 
     glBindVertexArray(0);
 
-    std::cout << "WebGL2 / GLES 3.0 initialized\n";
 }
-void render()
+*/
+void BrowserBackend::render()
 {
 
     updateViewport();   // <--
@@ -131,8 +106,11 @@ void render()
     glBindVertexArray(VAO);
     glDrawArrays(GL_TRIANGLES, 0, 3);
 }
+void render_thunk(void* arg) {
+    static_cast<BrowserBackend*>(arg)->render();
+}
 void BrowserBackend::do_main_loop() {
-    emscripten_set_main_loop(render, 0, true);
+    emscripten_set_main_loop_arg(render_thunk,this, 0, true);
 }
 
 void BrowserBackend::cleanup() {
