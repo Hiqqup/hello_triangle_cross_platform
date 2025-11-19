@@ -41,13 +41,7 @@ void DesktopBackend::initialize_context() {
 }
 void DesktopBackend::do_main_loop() {
     while(!glfwWindowShouldClose(window)) {
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        glUseProgram(shaderProgram);
-        glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-
+        render();
         glfwSwapBuffers(window);
         glfwPollEvents();
     }

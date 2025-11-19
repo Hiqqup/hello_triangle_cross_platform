@@ -11,7 +11,6 @@ public:
 
     void initialize_context() override;
     //void init() override;
-    void render();
     void do_main_loop() override;
     void cleanup() override;
 };

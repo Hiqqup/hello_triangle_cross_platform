@@ -72,3 +72,12 @@ void Backend::init() {
     glBindVertexArray(0);
 
 }
+
+void Backend::render() {
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        glUseProgram(shaderProgram);
+        glBindVertexArray(VAO);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+}
