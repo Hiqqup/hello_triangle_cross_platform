@@ -20,6 +20,10 @@ void updateViewport() {
     glViewport(0, 0, (int)width, (int)height);
 }
 
+std::filesystem::path BrowserBackend::resolveAssetPath(const std::filesystem::path &relativeAssetPath) {
+    return std::filesystem::path("/assets") / relativeAssetPath;
+}
+
 void BrowserBackend::initialize_context() {
     EmscriptenWebGLContextAttributes attr;
     emscripten_webgl_init_context_attributes(&attr);

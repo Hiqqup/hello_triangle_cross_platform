@@ -10,8 +10,8 @@ option(BROWSER_BUILD "Building for browser or not" OFF)
 set(SOURCES
     main.cpp
     Backend.h
-        Backend.cpp
-        gl_backend.h
+    Backend.cpp
+    gl_backend.h
 )
 
 
@@ -28,6 +28,9 @@ else()
         DesktopBackend.h
     )
 endif()
+
+
+
 
 
 set(DEPENDENCIES)
@@ -71,9 +74,8 @@ if(BROWSER_BUILD)
     )
     target_link_options(${EXE_FILE} PRIVATE
         "-sUSE_WEBGL2=1"
-        "-sFULL_ES3=1"
-        "-sALLOW_MEMORY_GROWTH=1"
-        "-sASSERTIONS=1"
+         "--preload-file"
+         "${CMAKE_CURRENT_SOURCE_DIR}/assets/@/assets"
     )
     add_custom_target(run_browser
         DEPENDS ${EXE_FILE}
@@ -84,3 +86,22 @@ else()
     )
 
 endif()
+
+
+target_compile_definitions(${EXE_FILE} PRIVATE ASSET_ROOT=./assets/)
+
+
+#set(ASSETS
+#    assets/shader.vert
+#    assets/shader.frag
+#)
+#
+#add_custom_target(copy_assets ALL PRE_BUILD
+#    COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:${EXE_FILE}>/assets
+#    COMMAND ${CMAKE_COMMAND} -E copy ${ASSETS} $<TARGET_FILE_DIR:${EXE_FILE}>/assets
+#    DEPENDS ${ASSETS}
+#)
+
+add_custom_command(TARGET ${EXE_FILE} PRE_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/assets $<TARGET_FILE_DIR:${EXE_FILE}>/assets)

@@ -39,6 +39,13 @@ void DesktopBackend::initialize_context() {
         return ;
     }
 }
+
+
+std::filesystem::path DesktopBackend::resolveAssetPath(const std::filesystem::path &relativeAssetPath) {
+    auto mergedPath = ("./assets" / relativeAssetPath).make_preferred();
+    return std::filesystem::canonical(mergedPath);
+}
+
 void DesktopBackend::do_main_loop() {
     while(!glfwWindowShouldClose(window)) {
         render();

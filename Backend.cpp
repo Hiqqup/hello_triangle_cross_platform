@@ -3,7 +3,9 @@
 //
 #include "Backend.h"
 
-
+#include <fstream>
+#include <iostream>
+#include <sstream>
 
 // Vertex shader (WebGL2 = GLES 3.0)
 const char* vertexShaderSource =
@@ -26,16 +28,35 @@ const char* fragmentShaderSource =
 "    FragColor = vec4(vertexColor, 1.0);\n"
 "}\n";
 
+
+
+
+
+std::string Backend::readText(const std::filesystem::path &filePath) {
+    std::ifstream sourceFile(resolveAssetPath(filePath));
+    if (!sourceFile.is_open()) {
+        std::cerr << "Error opening file: " << filePath << std::endl;
+    }
+    std::stringstream buffer;
+    buffer << sourceFile.rdbuf();
+    return buffer.str();
+}
+
+ GLuint Backend::loadAndCompileShader(GLuint shaderType, const std::filesystem::path &shaderPath) {
+     auto shaderSource = readText(shaderPath);
+     auto source = shaderSource.c_str();
+     auto shaderID = glCreateShader(shaderType);
+     glShaderSource(shaderID, 1, &source, nullptr);
+     glCompileShader(shaderID);
+    return shaderID;
+ }
+
 void Backend::init() {
 
-    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, nullptr);
-    glCompileShader(vertexShader);
 
-    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, nullptr);
-    glCompileShader(fragmentShader);
-
+    GLuint vertexShader = loadAndCompileShader(GL_VERTEX_SHADER, "shader.vert");
+    GLuint fragmentShader =loadAndCompileShader(GL_FRAGMENT_SHADER, "shader.frag");
+//
     shaderProgram = glCreateProgram();
     glAttachShader(shaderProgram, vertexShader);
     glAttachShader(shaderProgram, fragmentShader);
