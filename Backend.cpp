@@ -7,8 +7,9 @@
 #include <iostream>
 #include <sstream>
 
-//#define STB_IMAGE_IMPLEMENTATION
-//#include <stb_image.h>
+
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
 
 std::string Backend::readText(const std::filesystem::path &filePath) {
     std::ifstream sourceFile(resolveAssetPath(filePath));
@@ -72,10 +73,10 @@ void Backend::init() {
     // Triangle vertex data
     float vertices[] = {
         // positions          // colors           // texture coords
-         0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,  1.0f, 1.0f,   // top right
-         0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,  1.0f, 0.0f,   // bottom right
-        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,  0.0f, 0.0f,   // bottom left
-        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,  0.0f, 1.0f    // top left
+         0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
+         0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
+        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
+        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left
     };
 
 unsigned int indices[] = {  // note that we start from 0!
@@ -103,7 +104,7 @@ unsigned int indices[] = {  // note that we start from 0!
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
     glEnableVertexAttribArray(2);
 
     glBindVertexArray(0);
@@ -116,23 +117,29 @@ unsigned int indices[] = {  // note that we start from 0!
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    //int width, height, nrChannels;
-    //const std::filesystem::path path = resolveAssetPath("container.jpg");
-    //const char* texture_path = path.c_str();
-    //unsigned char *data = stbi_load(texture_path, &width, &height, &nrChannels, 0);
 
-    //if (data)
-    //{
-    //    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-    //    glGenerateMipmap(GL_TEXTURE_2D);
-    //}
-    //else
-    //{
-    //    std::cout << "Failed to load texture" << std::endl;
-    //}
-    //stbi_image_free(data);
+    Image i = load_image("container.jpg");
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, i.width, i.height, 0, GL_RGB, GL_UNSIGNED_BYTE, i.data);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    destroy_image(i);
 
     glUniform1i(glGetUniformLocation(shaderProgram, "ourTexture"), 0);
+}
+
+Backend::Image Backend::load_image(const std::filesystem::path &imagePath) {
+    Image i;
+    int  nrChannels;
+    const std::filesystem::path path = resolveAssetPath(imagePath);
+    const char* texture_path = path.c_str();
+    i.data = stbi_load(texture_path, &i.width, &i.height, &nrChannels, 0);
+    if (!i.data) {
+        std::cerr << "Failed to load image";
+    }
+    return i;
+}
+
+void Backend::destroy_image(const Image &i) {
+    stbi_image_free(i.data);
 }
 
 void Backend::render() {

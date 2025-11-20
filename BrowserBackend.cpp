@@ -24,6 +24,7 @@ std::filesystem::path BrowserBackend::resolveAssetPath(const std::filesystem::pa
     return std::filesystem::path("/assets") / relativeAssetPath;
 }
 
+
 void BrowserBackend::initialize_context() {
     EmscriptenWebGLContextAttributes attr;
     emscripten_webgl_init_context_attributes(&attr);

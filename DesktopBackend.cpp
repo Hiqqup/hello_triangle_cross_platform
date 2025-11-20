@@ -7,11 +7,16 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 
+
 GLFWwindow* window ;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
 }
+
+
+
+
 
 void DesktopBackend::initialize_context() {
     if (!glfwInit()) {
@@ -39,6 +44,7 @@ void DesktopBackend::initialize_context() {
         return ;
     }
 }
+
 
 
 std::filesystem::path DesktopBackend::resolveAssetPath(const std::filesystem::path &relativeAssetPath) {

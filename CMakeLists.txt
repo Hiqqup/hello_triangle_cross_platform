@@ -33,13 +33,29 @@ endif()
 
 
 
-set(DEPENDENCIES)
+include(FetchContent)
+
+FetchContent_Declare(
+    stb
+    GIT_REPOSITORY https://github.com/nothings/stb.git
+    GIT_TAG master
+)
+
+FetchContent_GetProperties(stb)
+if (NOT stb_POPULATED)
+    FetchContent_MakeAvailable(stb)
+    add_library(stb INTERFACE)
+    target_include_directories(stb INTERFACE ${stb_SOURCE_DIR})
+endif()
+
+set(DEPENDENCIES
+    stb
+)
 if(BROWSER_BUILD)
     list(APPEND DEPENDENCIES
     )
 else()
 
-    include(FetchContent)
 
     FetchContent_Declare(
         glad
@@ -54,23 +70,10 @@ else()
     )
     FetchContent_MakeAvailable(glfw)
 
-    FetchContent_Declare(
-        stb
-        GIT_REPOSITORY https://github.com/nothings/stb.git
-        GIT_TAG master
-    )
-
-    FetchContent_GetProperties(stb)
-    if (NOT stb_POPULATED)
-        FetchContent_MakeAvailable(stb)
-        add_library(stb INTERFACE)
-        target_include_directories(stb INTERFACE ${stb_SOURCE_DIR})
-    endif()
 
     list(APPEND DEPENDENCIES
         glad
         glfw
-        stb
     )
 endif()
 
