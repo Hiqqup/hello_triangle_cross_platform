@@ -91,17 +91,18 @@ endif()
 target_compile_definitions(${EXE_FILE} PRIVATE ASSET_ROOT=./assets/)
 
 
-#set(ASSETS
-#    assets/shader.vert
-#    assets/shader.frag
-#)
-#
-#add_custom_target(copy_assets ALL PRE_BUILD
-#    COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:${EXE_FILE}>/assets
-#    COMMAND ${CMAKE_COMMAND} -E copy ${ASSETS} $<TARGET_FILE_DIR:${EXE_FILE}>/assets
-#    DEPENDS ${ASSETS}
-#)
+set(ASSETS
+    ${CMAKE_SOURCE_DIR}/assets/shader.vert
+    ${CMAKE_SOURCE_DIR}/assets/shader.frag
+)
 
-add_custom_command(TARGET ${EXE_FILE} PRE_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_SOURCE_DIR}/assets $<TARGET_FILE_DIR:${EXE_FILE}>/assets)
+add_custom_target(copy_assets
+    COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:${EXE_FILE}>/assets
+    COMMAND ${CMAKE_COMMAND} -E copy ${ASSETS} $<TARGET_FILE_DIR:${EXE_FILE}>/assets
+    DEPENDS ${ASSETS}
+)
+add_dependencies(${EXE_FILE} copy_assets)
+
+#add_custom_command(TARGET ${EXE_FILE} PRE_BUILD
+#        COMMAND ${CMAKE_COMMAND} -E copy_directory
+#        ${CMAKE_SOURCE_DIR}/assets $<TARGET_FILE_DIR:${EXE_FILE}>/assets)

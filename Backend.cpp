@@ -7,28 +7,6 @@
 #include <iostream>
 #include <sstream>
 
-// Vertex shader (WebGL2 = GLES 3.0)
-const char* vertexShaderSource =
-"#version 300 es\n"
-"layout(location = 0) in vec3 aPos;\n"
-"layout(location = 1) in vec3 aColor;\n"
-"out vec3 vertexColor;\n"
-"void main() {\n"
-"    gl_Position = vec4(aPos, 1.0);\n"
-"    vertexColor = aColor;\n"
-"}\n";
-
-// Fragment shader
-const char* fragmentShaderSource =
-"#version 300 es\n"
-"precision mediump float;\n"
-"in vec3 vertexColor;\n"
-"out vec4 FragColor;\n"
-"void main() {\n"
-"    FragColor = vec4(vertexColor, 1.0);\n"
-"}\n";
-
-
 
 
 
