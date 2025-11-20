@@ -9,17 +9,11 @@
 
 
 
+
 class Backend {
 public:
 
-    struct Image {
-        unsigned char * data;
-        int width;
-        int height;
-    };
 
-    virtual Image load_image(const std::filesystem::path &imagePath) ;
-    virtual void destroy_image(const Image &img) ;
     virtual std::filesystem::path resolveAssetPath(const std::filesystem::path &relativeAssetPath) = 0 ;
     virtual std::string readText(const std::filesystem::path &filePath);
     virtual GLuint loadAndCompileShader(GLuint shaderType, const std::filesystem::path &shaderPath);

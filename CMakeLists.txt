@@ -12,6 +12,8 @@ set(SOURCES
     Backend.h
     Backend.cpp
     gl_backend.h
+    Image.cpp
+    Image.h
 )
 
 
@@ -22,6 +24,7 @@ if(BROWSER_BUILD)
     )
     set(CMAKE_EXECUTABLE_SUFFIX ".js")
     configure_file(${CMAKE_SOURCE_DIR}/index.html ${CMAKE_BINARY_DIR}/index.html COPYONLY)
+    configure_file(${CMAKE_SOURCE_DIR}/favicon.ico ${CMAKE_BINARY_DIR}/favicon.ico COPYONLY)
 else()
     list(APPEND SOURCES
         DesktopBackend.cpp
@@ -55,8 +58,6 @@ if(BROWSER_BUILD)
     list(APPEND DEPENDENCIES
     )
 else()
-
-
     FetchContent_Declare(
         glad
         GIT_REPOSITORY https://github.com/Dav1dde/glad.git

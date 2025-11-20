@@ -7,9 +7,8 @@
 #include <iostream>
 #include <sstream>
 
+#include "Image.h"
 
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
 
 std::string Backend::readText(const std::filesystem::path &filePath) {
     std::ifstream sourceFile(resolveAssetPath(filePath));
@@ -118,29 +117,14 @@ unsigned int indices[] = {  // note that we start from 0!
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 
-    Image i = load_image("container.jpg");
+    Image i = Image(resolveAssetPath("container.jpg"));
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, i.width, i.height, 0, GL_RGB, GL_UNSIGNED_BYTE, i.data);
     glGenerateMipmap(GL_TEXTURE_2D);
-    destroy_image(i);
 
     glUniform1i(glGetUniformLocation(shaderProgram, "ourTexture"), 0);
 }
 
-Backend::Image Backend::load_image(const std::filesystem::path &imagePath) {
-    Image i;
-    int  nrChannels;
-    const std::filesystem::path path = resolveAssetPath(imagePath);
-    const char* texture_path = path.c_str();
-    i.data = stbi_load(texture_path, &i.width, &i.height, &nrChannels, 0);
-    if (!i.data) {
-        std::cerr << "Failed to load image";
-    }
-    return i;
-}
 
-void Backend::destroy_image(const Image &i) {
-    stbi_image_free(i.data);
-}
 
 void Backend::render() {
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
