@@ -4,9 +4,6 @@
 
 #include "BrowserBackend.h"
 #include <emscripten/emscripten.h>
-#include <emscripten/html5.h>
-#include "gl_backend.h"
-#include <iostream>
 
 
 
@@ -15,9 +12,10 @@ std::filesystem::path BrowserBackend::resolveAssetPath(const std::filesystem::pa
 }
 
 
-void BrowserBackend::do_main_loop(const std::function<void()>& func) {
+void BrowserBackend::do_main_loop(const std::function<void()>& callback) {
     emscripten_set_main_loop_arg([](void* arg) {
-            auto* backend = static_cast<BrowserBackend *>(arg);
-            backend->main_loop();
-        }, this, 0, true);
+            const auto* func = static_cast<std::function<void()> *>(arg);
+            (*func)();
+            // ReSharper disable once CppCStyleCast
+    }, (void*)&callback, 0, true);
 }

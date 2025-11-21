@@ -4,12 +4,10 @@
 
 #pragma once
 #include "Backend.h"
-#include <GLFW/glfw3.h>
 
 
-class BrowserBackend: public Backend {
+class BrowserBackend final: public Backend {
 public:
-
+    void do_main_loop(const std::function<void()> &callback) override;
     std::filesystem::path resolveAssetPath(const std::filesystem::path &relativeAssetPath) override;
-    void do_main_loop(const std::function<void()> &func) override;
 };

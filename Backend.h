@@ -3,26 +3,23 @@
 //
 
 #pragma once
-#include "gl_backend.h"
 #include <filesystem>
+// ReSharper disable once CppUnusedIncludeDirective
+#include "gl_backend.h"
 #include <GLFW/glfw3.h>
 #include <functional>
 
+class Context {
+    public:
+        GLFWwindow* window ;
+        Context();
+        ~Context();
+    };
 class Backend {
 public:
-
-
-    GLFWwindow* window ;
-    GLuint shaderProgram;
-    GLuint texture;
-    GLuint VAO, VBO, EBO;
-
-    virtual void main_loop();
-
-    virtual void initialize_context() ;
-    virtual void setup_main_loop_cleanup();
-    virtual void do_main_loop(const std::function<void()>& func) = 0;
+    Context context;
+    virtual ~Backend() = default;
+    virtual void do_main_loop(const std::function<void()>& callback) = 0;
     virtual std::filesystem::path resolveAssetPath(const std::filesystem::path &relativeAssetPath) = 0 ;
-
 };
 extern Backend* global_backend;

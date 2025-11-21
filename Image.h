@@ -11,6 +11,6 @@ class Image {
     explicit  Image(const std::filesystem::path &full_image_path) ;
     ~Image();
     unsigned char * data;
-    int width;
-    int height;
+    int width{};
+    int height{};
 };

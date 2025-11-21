@@ -4,12 +4,11 @@
 
 #pragma once
 #include "Backend.h"
-#include <GLFW/glfw3.h>
 
 
-class DesktopBackend: public Backend {
+class DesktopBackend final : public Backend {
 public:
-    void initialize_context() override;
-    std::filesystem::path resolveAssetPath(const std::filesystem::path &relativeAssetPath) override;
+    DesktopBackend();
     void do_main_loop(const std::function<void()> &func) override;
+    std::filesystem::path resolveAssetPath(const std::filesystem::path &relativeAssetPath) override;
 };
