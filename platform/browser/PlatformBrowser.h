@@ -3,10 +3,10 @@
 //
 
 #pragma once
-#include "Backend.h"
+#include "../Platform.h"
 
 
-class BrowserBackend final: public Backend {
+class PlatformBrowser final: public Platform {
 public:
     void do_main_loop(const std::function<void()> &callback) override;
     std::filesystem::path resolveAssetPath(const std::filesystem::path &relativeAssetPath) override;

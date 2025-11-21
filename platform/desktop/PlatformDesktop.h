@@ -3,12 +3,12 @@
 //
 
 #pragma once
-#include "Backend.h"
+#include "../Platform.h"
 
 
-class DesktopBackend final : public Backend {
+class PlatformDesktop final : public Platform {
 public:
-    DesktopBackend();
+    PlatformDesktop();
     void do_main_loop(const std::function<void()> &func) override;
     std::filesystem::path resolveAssetPath(const std::filesystem::path &relativeAssetPath) override;
 };

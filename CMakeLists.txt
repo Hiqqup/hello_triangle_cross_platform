@@ -7,43 +7,24 @@ set(EXE_FILE cross_platform_game_engine)
 
 option(BROWSER_BUILD "Building for browser or not" OFF)
 
+#sources
 set(SOURCES
     main.cpp
-    Backend.h
-    Backend.cpp
+        platform/Platform.h
+        platform/Platform.cpp
     gl_backend.h
     Image.cpp
     Image.h
 )
 
 
-if(BROWSER_BUILD)
-    list(APPEND SOURCES
-        BrowserBackend.cpp
-        BrowserBackend.h
-    )
-    set(CMAKE_EXECUTABLE_SUFFIX ".js")
-    configure_file(${CMAKE_SOURCE_DIR}/index.html ${CMAKE_BINARY_DIR}/index.html COPYONLY)
-    configure_file(${CMAKE_SOURCE_DIR}/favicon.ico ${CMAKE_BINARY_DIR}/favicon.ico COPYONLY)
-else()
-    list(APPEND SOURCES
-        DesktopBackend.cpp
-        DesktopBackend.h
-    )
-endif()
-
-
-
-
-
+#dependencies
 include(FetchContent)
-
 FetchContent_Declare(
     stb
     GIT_REPOSITORY https://github.com/nothings/stb.git
     GIT_TAG master
 )
-
 FetchContent_GetProperties(stb)
 if (NOT stb_POPULATED)
     FetchContent_MakeAvailable(stb)
@@ -54,10 +35,27 @@ endif()
 set(DEPENDENCIES
     stb
 )
+
+
 if(BROWSER_BUILD)
+    #sources
+    list(APPEND SOURCES
+            platform/browser/PlatformBrowser.cpp
+            platform/browser/PlatformBrowser.h
+    )
+    set(CMAKE_EXECUTABLE_SUFFIX ".js")
+    configure_file(${CMAKE_SOURCE_DIR}/platform/browser/index.html ${CMAKE_BINARY_DIR}/index.html COPYONLY)
+    configure_file(${CMAKE_SOURCE_DIR}/platform/browser/favicon.ico ${CMAKE_BINARY_DIR}/favicon.ico COPYONLY)
+    #Dependencies
     list(APPEND DEPENDENCIES
     )
 else()
+    #sources
+    list(APPEND SOURCES
+            platform/desktop/PlatformDesktop.cpp
+            platform/desktop/PlatformDesktop.h
+    )
+    # Dependencies
     FetchContent_Declare(
         glad
         GIT_REPOSITORY https://github.com/Dav1dde/glad.git
@@ -78,11 +76,11 @@ else()
     )
 endif()
 
-
-
 add_executable(${EXE_FILE} ${SOURCES} )
 target_link_libraries(${EXE_FILE} PRIVATE ${DEPENDENCIES})
+
 if(BROWSER_BUILD)
+    # linker flags
     target_compile_options(${EXE_FILE} PRIVATE
         "-sUSE_WEBGL2=1"
         "-sFULL_ES3=1"
@@ -96,21 +94,19 @@ if(BROWSER_BUILD)
          "--preload-file"
          "${CMAKE_CURRENT_SOURCE_DIR}/assets/@/assets"
     )
+    # build target
     add_custom_target(run_browser
         DEPENDS ${EXE_FILE}
     )
 else()
+    # build target
     add_custom_target(default
         DEPENDS ${EXE_FILE}
     )
 
 endif()
 
-
-target_compile_definitions(${EXE_FILE} PRIVATE ASSET_ROOT=./assets/)
-
-
-
+# asset copying
 add_custom_target(copy_assets COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets $<TARGET_FILE_DIR:${EXE_FILE}>/assets )
 add_dependencies(${EXE_FILE} copy_assets)
 

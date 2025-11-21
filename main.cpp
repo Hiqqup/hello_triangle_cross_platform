@@ -2,11 +2,11 @@
 #include <iostream>
 #include <sstream>
 
-#include "BrowserBackend.h"
-#include "DesktopBackend.h"
+#include "platform/browser/PlatformBrowser.h"
+#include "platform/desktop/PlatformDesktop.h"
 #include "Image.h"
 
-Backend* global_backend = nullptr;
+Platform* global_backend = nullptr;
 
 std::string readText(const std::filesystem::path &filePath) {
     std::ifstream sourceFile(global_backend->resolveAssetPath(filePath));
@@ -143,9 +143,9 @@ void do_game() {
 }
 int main() {
 #ifdef __EMSCRIPTEN__
-    static BrowserBackend backend;
+    static PlatformBrowser backend;
 #else
-    static DesktopBackend backend;
+    static PlatformDesktop backend;
 #endif
     global_backend = &backend;
     do_game();
